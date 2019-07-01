@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Localization.Data;
 using Localization.Models;
+using Localization.ViewModels;
 
 namespace Localization.Controllers
 {
@@ -54,15 +55,23 @@ namespace Localization.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phone,Address")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,Phone,Address")] CustomerViewModel customerViewModel)
         {
+            Customer customer = new Customer
+            {
+                Name = customerViewModel.Name,
+                Phone = customerViewModel.Phone,
+                Address = customerViewModel.Address
+            };
+
             if (ModelState.IsValid)
             {
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            
+            return View(customerViewModel);
         }
 
         // GET: Customer/Edit/5
